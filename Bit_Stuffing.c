@@ -142,8 +142,11 @@ int main()
 }
 
 /*
-Input
-Enter the data: 011111111100000010111111111101010111111111000000000
+Enter the data: 10111001
+Data after stuffing 0's: 10111001 
+Final Data to be sent: 011111101011100101111110
+Data after Flag bytes dropped by reciever: 10111001
+Orignal Data recieved: 10111011
 */
 
 /*
