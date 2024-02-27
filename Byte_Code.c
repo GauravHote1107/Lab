@@ -58,9 +58,9 @@ int main()
 }
 
 /*
-Enter Data:12345
-Enter sender's data:612345
-Original received data: 12345
+Enter Data:11011001
+Enter sender's data:911011001
+Original received data: 11011001
 */
 
 /*
