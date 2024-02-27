@@ -142,6 +142,11 @@ int main()
 }
 
 /*
+Input
+Enter the data: 011111111100000010111111111101010111111111000000000
+*/
+
+/*
 gcc Bit_Stuffing.c
 ./a.out
 */
