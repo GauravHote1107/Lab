@@ -169,13 +169,14 @@ int main()
 }
 
 /*
-Enter Data:110011110000111111100000
-Data is of 3 bytes.
-Data Converted in Bytes format: 110011110000111111100000
-Data after inserting Esc key if data having flag or Esc byte: 110011110000111111100000
-Final data to be sent: 0111111011001111000011111110000001111110
-Original Data is 110011110000111111100000
+Enter Data:10111001
+Data is of 1 bytes.
+Data Converted in Bytes format: 10111001
+Data after inserting Esc key if data having flag or Esc byte: 10111001
+Final data to be sent: 011111101011100101111110
+Original Data is 10111001
 */
+
 
 /*
 gcc bytestuffing.c
