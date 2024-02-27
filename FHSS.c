@@ -55,3 +55,16 @@ int main()
     free(dataPackets);
     return 0;
 }
+
+/*
+Input
+3
+10
+20
+30
+*/
+
+/*
+gcc fhss.c
+./a.out
+*/
