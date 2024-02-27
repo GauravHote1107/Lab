@@ -1,158 +1,80 @@
-include<stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#define size 28
+#include<stdio.h>
+#include<stdlib.h>
 
+char data[32];
+char checkValue[28];
+char crckey[10];
+int dataLength;
 
-char frame[size];
-char crc[size];
-char data[size];
-char check_value[size];
-int data_length;
-int crc_size;
-int bit;
+void xor(){
+    for(int j=1;j<strlen(crckey);j++)
+    checkValue[j]=checkValue[j]==crckey[j]?'0':'1';
+}
+void crc(){
+    printf("\n");
 
-void crcfun()
-{
-    int i, j;
-    for (i = 0; i < crc_size; i++)
-    {
-        check_value[i] = data[i];
-    }
-    int step = 1;
-    do
-    {
-        if (check_value[0] == '1')
-        {
-            for (j = 1; j < crc_size; j++)
-            {
-                if (check_value[j] == crc[j])
-                {
-                    check_value[j] = '0';
-                }
-                else
-                {
-                    check_value[j] = '1';
-                }
-            }
-        }
-        for (j = 0; j < crc_size - 1; j++)
-        {
-            check_value[j] = check_value[j + 1];
-        }
-        check_value[j] = data[i++];
-        printf("XOR operation %d: %s\n", step++, check_value);
-    } while (i <= (data_length + crc_size - 1));
+    int i;
+    for(i=0;i<strlen(crckey);i++)
+    checkValue[i]=data[i];
+    do{
+        if(checkValue[0]=='1')
+        xor();
+        int j;
+        for(j=0;j<strlen(crckey)-1;j++)
+        checkValue[j]=checkValue[j+1];
+        checkValue[j]=data[i++];
+        printf("Check value:%s\n",checkValue);
+    }while(i<=dataLength+strlen(crckey)-1);
+    printf("\n");
 }
 
-void sender()
-{
-    crcfun();
-    printf("CRC value: %s\n", check_value);
-    int i, j;
-    for (int i = 0; i < data_length; i++)
-    {
-        data[i] = frame[i];
-    }
-    for (i = 0; i < (crc_size - 1); i++)
-    {
-        data[i + data_length] = check_value[i];
-    }
-    printf("Data sent: %s\n", data);
-}
+int main(){
+    while(1){
+        printf("Choose one of the options:\n");
+        printf("1.Set CRC Key.\n");
+        printf("2.Generate CRC key from data.\n");
+        printf("3.Check validity of data.\n");
+        printf("4.Exit from the program.\n");
+        printf("\n");
+        printf("Choose your option:");
 
-void addError()
-{
-    if (bit <= (data_length + crc_size - 1))
-    {
-        if (data[bit - 1] == '0')
-        {
-            data[bit - 1] = '1';
-        }
-        else
-        {
-            data[bit - 1] = '0';
-        }
-    }
-}
-
-void receiver()
-{
-    printf("Data received %s\n", data);
-    crcfun();
-    int flag = 0;
-    for (int i = 0; i < crc_size - 1; i++)
-    {
-        if (check_value[i] == '0')
-        {
-            flag = 0;
-        }
-        else
-        {
-            flag++;
+        int choice;
+        scanf("%d",&choice);
+        switch(choice){
+            case 1:
+            printf("Enter CRC key:");
+            scanf("%s",crckey);
             break;
+            case 2:
+            printf("Enter data:");
+            scanf("%s",data);
+            dataLength=strlen(data);
+            for(int i=0;i<strlen(crckey)-1;i++)
+            data[i+dataLength]='0';
+            printf("Data after appending zeros:%s\n",data);
+            crc();
+            printf("CRC Value:%s\n",checkValue);
+            for(int i=0;i<strlen(crckey)-1;i++)
+            data[i+dataLength]=checkValue[i];
+            printf("Data sent:%s\n",data);
+            break;
+            case 3:
+             printf("Enter data to check:");
+             scanf("%s",data);
+             crc();
+             int i;
+             for(i=0;(i<strlen(crckey)-1)&& (checkValue[i]!='1');i++);
+             if(i<strlen(crckey)-1)
+             printf("Error detected!\n");
+             else
+             printf("No error detected\n");
+             break;
+             case 4:
+             return 0;
+             default:
+             printf("Invalid option selected");
         }
+        printf("\n\n");
     }
-    if (flag == 0)
-    {
-        printf("No error detected\n");
-    }
-    else
-    {
-        printf("Error detected\n");
-    }
-}
-
-void dataSend()
-{
-    for (int i = 0; i < data_length; i++)
-        data[i] = frame[i];
-    for (int i = data_length; i < (data_length + crc_size - 1);
-         i++)
-        data[i] = '0';
-    printf("Data after appending zero's: %s\n\n", data);
-}
-
-int main()
-{
-    printf("Enter frame\n");
-    scanf("%s", frame);
-    data_length = strlen(frame);
-    printf("Enter crc key\n");
-    scanf("%s", crc);
-    crc_size = strlen(crc);
-    printf("\nData: %s\n", frame);
-    printf("CRC key: %s\n", crc);
-    int choice;
-    while (1)
-    {
-        printf("1. Transmit data without error\n");
-        printf("2. Transmit data with error\n");
-        printf("3. Exit\n");
-        scanf("%d", &choice);
-        switch (choice)
-        {
-        case 1:
-            dataSend();
-            sender();
-            receiver();
-            break;
-        case 2:
-            dataSend();
-            sender();
-            printf("Enter bit number to manipulate\n");
-            scanf("%d", &bit);
-            addError();
-            receiver();
-            break;
-        case 3:
-            printf("Exiting the system\n");
-            exit(0);
-            break;
-        default:
-            printf("Invalid option\n");
-            break;
-        }
-        return 0;
-    }
+    return 0;
 }
